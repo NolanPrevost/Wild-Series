@@ -1,0 +1,25 @@
+
+
+// customize some Bootstrap variables
+$primary: black;
+$secundary: rgba(52, 1, 255, 1);
+
+// the ~ allows you to reference things in node_modules
+@import "~bootstrap/scss/bootstrap";
+
+body {
+    background-color: $primary;
+    color: white;
+}
+
+.logoNavbar {
+    background-color: $secundary;
+    color: white;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 20pt;
+}
+
+.whiteBg {
+    background-color: white;
+}
+
