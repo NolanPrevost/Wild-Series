@@ -28,9 +28,6 @@ class Program
     #[ORM\JoinColumn(nullable: false)]
     private $category;
 
-    #[ORM\OneToMany(mappedBy: 'program_id', targetEntity: Season::class, orphanRemoval: true)]
-    private $seasons;
-
     public function __construct()
     {
         $this->seasons = new ArrayCollection();
@@ -85,36 +82,6 @@ class Program
     public function setCategory(?category $category): self
     {
         $this->category = $category;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Season>
-     */
-    public function getSeasons(): Collection
-    {
-        return $this->seasons;
-    }
-
-    public function addSeason(Season $season): self
-    {
-        if (!$this->seasons->contains($season)) {
-            $this->seasons[] = $season;
-            $season->setProgramId($this);
-        }
-
-        return $this;
-    }
-
-    public function removeSeason(Season $season): self
-    {
-        if ($this->seasons->removeElement($season)) {
-            // set the owning side to null (unless already changed)
-            if ($season->getProgramId() === $this) {
-                $season->setProgramId(null);
-            }
-        }
 
         return $this;
     }
