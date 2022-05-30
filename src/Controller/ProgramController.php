@@ -2,6 +2,7 @@
 // src/Controller/ProgramController.php
 namespace App\Controller;
 
+use App\Repository\EpisodeRepository;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -37,13 +38,30 @@ class ProgramController extends AbstractController
   }
 
   #[Route('/{programId<\d+>}/season/{seasonId<\d+>}', methods: ['GET'], name: 'season_show')]
-  public function showSeason(int $programId, int $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository)
+  public function showSeason(int $programId, int $seasonId, ProgramRepository $programRepository, SeasonRepository $seasonRepository, EpisodeRepository $episodeRepository)
   {
     $program = $programRepository->findOneById($programId);
     $season = $seasonRepository->findById($seasonId);
+    $episodes = $episodeRepository->findBySeason($seasonId);
+    // var_dump($episodes); die;
     return $this->render('program/season_show.html.twig', [
       'program' => $program,
       'season' => $season,
+      'episodes' => $episodes,
+    ]);
+  }
+
+  #[Route('/{programId<\d+>}/season/{seasonId<\d+>}/episode/{episodeId<\d+>}', methods: ['GET'], name: 'episode_show')]
+  public function showEpisode(int $programId, int $seasonId, int $episodeId, ProgramRepository $programRepository, SeasonRepository $seasonRepository, EpisodeRepository $episodeRepository)
+  {
+    $program = $programRepository->findOneById($programId);
+    $season = $seasonRepository->findById($seasonId);
+    $episode = $episodeRepository->findById($episodeId);
+    // var_dump($episode);die;
+    return $this->render('program/episode_show.html.twig', [
+      'program' => $program,
+      'season' => $season,
+      'episode' => $episode,
     ]);
   }
 }
