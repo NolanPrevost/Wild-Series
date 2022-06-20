@@ -2,10 +2,13 @@
 // src/Controller/ProgramController.php
 namespace App\Controller;
 
+use App\Entity\Program;
+use App\Form\ProgramType;
 use App\Repository\EpisodeRepository;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
@@ -43,7 +46,6 @@ class ProgramController extends AbstractController
     $program = $programRepository->findOneById($programId);
     $season = $seasonRepository->findById($seasonId);
     $episodes = $episodeRepository->findBySeason($seasonId);
-    // var_dump($episodes); die;
     return $this->render('program/season_show.html.twig', [
       'program' => $program,
       'season' => $season,
@@ -57,11 +59,29 @@ class ProgramController extends AbstractController
     $program = $programRepository->findOneById($programId);
     $season = $seasonRepository->findById($seasonId);
     $episode = $episodeRepository->findById($episodeId);
-    // var_dump($episode);die;
     return $this->render('program/episode_show.html.twig', [
       'program' => $program,
       'season' => $season,
       'episode' => $episode,
     ]);
   }
+
+  #[Route('/new', name: 'new', methods: ['GET', 'POST'])]
+    public function new(Request $request, ProgramRepository $programRepository): Response
+    {
+        $program = new Program();
+        $form = $this->createForm(ProgramType::class, $program);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $programRepository->add($program, true);
+
+            return $this->redirectToRoute('program_index', [], Response::HTTP_SEE_OTHER);
+        }
+
+        return $this->renderForm('program/new.html.twig', [
+            'program' => $program,
+            'form' => $form,
+        ]);
+    }
 }
